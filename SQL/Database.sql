@@ -78,6 +78,7 @@ REFERENCES Prescriptions (ID);
 -- Index
 
 CREATE NONCLUSTERED INDEX Name_Index ON Medicines (Name);
+CREATE NONCLUSTERED INDEX PrescriptionNumber_Index ON Prescriptions (PrescriptionNumber);
 
 -- Trigger
 GO
