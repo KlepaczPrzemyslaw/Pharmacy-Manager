@@ -3,11 +3,19 @@ using System.Data.SqlClient;
 
 namespace Pharmacy_Manager
 {
+	/// <summary>
+	/// 	Klasa dla zamówień - Podczas zamówienia dodajemy 2, lub 3 rzeczy -> a to mechanizm do cofania zmian, gdyby coś poszło nie tak.
+	/// </summary>
+
 	public class OrderSqlTransaction
 	{
 		SqlConnection sqlConnection_ = new SqlConnection(ConnectionString.connectionString);
 		SqlTransaction transaction;
 		SqlCommand sqlCommand = new SqlCommand();
+
+		/// <summary>
+		/// 	Konstruktor -> otwiera transakcję
+		/// </summary>
 
 		public OrderSqlTransaction()
 		{
@@ -17,11 +25,19 @@ namespace Pharmacy_Manager
 			sqlCommand.Transaction = transaction;
 		}
 
+		/// <summary>
+		/// 	Potwierdzenie transakcji
+		/// </summary>
+
 		public void TransactionCommit()
 		{
 			transaction.Commit();
 			sqlConnection_.Close();
 		}
+
+		/// <summary>
+		/// 	Anulowanie transakcji
+		/// </summary>
 
 		public void TransactionRollback()
 		{
@@ -48,6 +64,7 @@ namespace Pharmacy_Manager
 				DbType = System.Data.DbType.Int64 };
 			sqlCommand.Parameters.Add(sqlPrescriptionNumberParam);
 
+			// Przypisanie ID dodanego rekordu
 			prescription.SaveID((int) sqlCommand.ExecuteScalar());
 
 			sqlCommand.Parameters.Remove(sqlCustomerNameParam);
@@ -78,7 +95,7 @@ namespace Pharmacy_Manager
 		}
 
 		/// <summary>
-		/// 	Wykonuje INSERT na tabeli Orders
+		/// 	Wykonuje INSERT na tabeli Orders -> Dla recepty
 		/// </summary>
 		/// <param name="order"></param>
 
@@ -107,7 +124,7 @@ namespace Pharmacy_Manager
 		}
 
 		/// <summary>
-		/// 	Wykonuje INSERT na tabeli Orders
+		/// 	Wykonuje INSERT na tabeli Orders -> Bez recepty
 		/// </summary>
 		/// <param name="order"></param>
 

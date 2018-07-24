@@ -182,7 +182,16 @@ namespace Pharmacy_Manager
 
 			// Pokazanie leku
 			ConsoleEx.WriteLineInRed("\nWybrany lek: ");
-			medList[index].ShowMedicine();
+
+			try
+			{
+				medList[index].ShowMedicine();
+			}
+			catch(Exception e)
+			{
+				ConsoleEx.WriteLineInRed($"Niepoprawny index! Treść wyjątku: {e.GetType()}: {e.Message}");
+				return null;
+			}
 
 			return medList[index];
 		}
@@ -197,6 +206,7 @@ namespace Pharmacy_Manager
 
 		private static Medicine GetMedicineForEditWithConfirmation_()
 		{
+			// Pobranie leku po indeksie
 			Medicine medicine = GetMedicineByIndex_();
 
 			if (medicine == null)
@@ -206,7 +216,7 @@ namespace Pharmacy_Manager
 			ConsoleEx.ImportantQuestion("Na pewno? (Y/N): ");
 			if (Console.ReadLine().Trim() != "Y")
 			{
-				ConsoleEx.WriteLineInGreen("\nNiczego nie usunięto!");
+				ConsoleEx.WriteLineInGreen("\nAkcji nie wykonano!");
 				return null;
 			}
 
@@ -231,6 +241,7 @@ namespace Pharmacy_Manager
 				Console.Write("Podaj PESEL klienta (11 znaków): ");
 				long pesel = long.Parse(Console.ReadLine().Trim());
 
+				// Sprawdzenie peselu
 				if (pesel < 9999999999 || pesel > 100000000000)
 					throw new FormatException();
 
@@ -248,6 +259,118 @@ namespace Pharmacy_Manager
 			{
 				ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w pobieraniu leku od użytkownika: {e.GetType().ToString()}: {e.Message}!!");
 				return null;
+			}
+		}
+
+		/// <summary>
+		/// 	Pobiera receptę po indeksie
+		/// 	Wykorzystuje: AddToOrder()
+		/// </summary>
+		/// <returns>
+		/// 	Prescription / null
+		/// </returns>
+
+		private static Prescription GetPrescriptionWithConfirmation_()
+		{
+			// Dodatkowa przeszukiwarka
+			Console.Write("Wpisz fragment numeru recepty (możesz zawęzić poszukiwania / wciśnij enter, aby pokazać wszystko): ");
+			string text = Console.ReadLine().Trim();
+			Console.WriteLine();
+
+			// Pobranie listy 
+			List<Prescription> prescriptions = PrescriptionDAO.SelectPrescriptions(text);
+
+			if (prescriptions == null)
+				return null;
+
+			// Wypisanie recept z indeksami
+			for (int i = 0; i < prescriptions.Count; i++)
+			{
+				ConsoleEx.WriteInGreen($"Index [{i}]:");
+				prescriptions[i].ShowPrescription();
+			}
+
+			// Pobranie indeksu
+			int index;
+			Console.Write("Wybierz index: ");
+			try
+			{
+				index = int.Parse(Console.ReadLine().Trim());
+			}
+			catch
+			{
+				ConsoleEx.WriteLineInRed("Niepoprawny index!");
+				return null;
+			}
+
+			// Pokazanie leku
+			ConsoleEx.WriteLineInRed("\nWybrana recepta: ");
+
+			try
+			{
+				prescriptions[index].ShowPrescription();
+			}
+			catch (Exception e)
+			{
+				ConsoleEx.WriteLineInRed($"Niepoprawny index! Treść wyjątku: {e.GetType()}: {e.Message}");
+				return null;
+			}
+
+			// Upewnienie się 
+			ConsoleEx.ImportantQuestion("Na pewno? (Y/N): ");
+			if (Console.ReadLine().Trim() != "Y")
+			{
+				ConsoleEx.WriteLineInGreen("\nAkcji nie wykonano!");
+				return null;
+			}
+
+			return prescriptions[index];
+
+		}
+
+		/// <summary>
+		/// 	Finalizuje zamówienie - dla recepty
+		/// 	Wykorzystuje: AddToOrder()
+		/// </summary>
+
+		public static void OrderFinalization_(OrderSqlTransaction orderSqlTransaction, Prescription prescription, Medicine medicine, int quantity)
+		{
+			try
+			{
+				// Dla nowej recepty bez ID
+				if (prescription != null && prescription.ID == null)
+					orderSqlTransaction.InsertPrescription(prescription);
+
+				// Update - odjęcie sprzedanej ilości
+				orderSqlTransaction.UpdateMedicineAmount(medicine, (medicine.Amount - quantity));
+
+				// Dla leku bez recepty
+				if (prescription == null)
+				{
+					orderSqlTransaction.InsertOrderWithoutPrescription(new Order(null, null, medicine.ID, DateTime.Now, quantity));
+				}
+				// Dla leku z receptą
+				else
+				{
+					orderSqlTransaction.InsertOrderWithPrescription(new Order(null, prescription.ID, medicine.ID, DateTime.Now, quantity));
+				}
+
+				// Upewnienie się
+				Console.WriteLine($"\nSuma zamówienia: {medicine.Price * quantity}zł. Czy klient zapłacił? (Y/N): ");
+				if (Console.ReadLine() != "Y")
+				{
+					ConsoleEx.WriteLineInRed("Anulowano akcję!");
+					orderSqlTransaction.TransactionRollback();
+					return;
+				}
+
+				orderSqlTransaction.TransactionCommit();
+				ConsoleEx.WriteLineInGreen("Sukces!");
+			}
+			catch (Exception e)
+			{
+				ConsoleEx.WriteLineInRed($"Wyjątek przy finalizacji: {e.GetType()}: {e.Message}");
+				orderSqlTransaction.TransactionRollback();
 			}
 		}
 
@@ -306,6 +429,7 @@ namespace Pharmacy_Manager
 
 			Console.Write("Jakiego leku szukasz: ");
 			string text = Console.ReadLine().Trim();
+			// Format wyświetlania
 			Console.WriteLine();
 
 			// Odpala metodę szukającą z podanym parametrem
@@ -334,6 +458,7 @@ namespace Pharmacy_Manager
 
 			// Pobranie leku do zmiany
 			Medicine oldMedicine = GetMedicineForEditWithConfirmation_();
+			// Format wyświetlania
 			Console.WriteLine();
 
 			if (oldMedicine == null)
@@ -457,65 +582,46 @@ namespace Pharmacy_Manager
 			{
 				ConsoleEx.WriteLineInRed($"\nTen lek jest na receptę!");
 
-				// musimy takową pobrać
-				Console.Write("Czy klient posiada receptę? (Y/N): ");
-				if (Console.ReadLine() != "Y")
+				Console.Write("Czy recepta jest już w systemie? (Y/N): ");
+				// Scieżka dla recepty w systemie
+				if (Console.ReadLine() == "Y")
 				{
-					ConsoleEx.WriteLineInRed("Anulowano akcję!");
-					return;
+					// Pod wyświetlanie 
+					Console.WriteLine();
+
+					// Pobranie recepty
+					Prescription prescription = GetPrescriptionWithConfirmation_();
+
+					if (prescription == null)
+						return;
+
+					// Finalizacja zamówienia z receptą
+					OrderFinalization_(orderSqlTransaction, prescription, medicine, quantity);
 				}
-
-				Prescription prescription = GetPrescriptionFromUser_();
-				if (prescription == null)
-					return;
-
-				try
+				// Scieżka dla nowej recepty
+				else
 				{
-					orderSqlTransaction.InsertPrescription(prescription);
-					orderSqlTransaction.UpdateMedicineAmount(medicine, (medicine.Amount - quantity));
-					orderSqlTransaction.InsertOrderWithPrescription(new Order(null, prescription.ID, medicine.ID, DateTime.Now, quantity));
-
-					Console.WriteLine($"\nSuma zamówienia: {medicine.Price * quantity}zł. Czy klient zapłacił? (Y/N): ");
+					// musimy takową pobrać
+					Console.Write("\nCzy klient posiada receptę? (Y/N): ");
 					if (Console.ReadLine() != "Y")
 					{
 						ConsoleEx.WriteLineInRed("Anulowano akcję!");
-						orderSqlTransaction.TransactionRollback();
 						return;
 					}
 
-					orderSqlTransaction.TransactionCommit();
-					ConsoleEx.WriteLineInGreen("Sukces!");
-				}
-				catch (Exception e)
-				{
-					ConsoleEx.WriteLineInRed($"Wyjątek przy finalizacji: {e.GetType()}: {e.Message}");
-					orderSqlTransaction.TransactionRollback();
+					Prescription prescription = GetPrescriptionFromUser_();
+					if (prescription == null)
+						return;
+
+					// Finalizacja zamówienia z receptą
+					OrderFinalization_(orderSqlTransaction, prescription, medicine, quantity);
 				}
 			}
 			// Bez recepty
 			else
 			{
-				try
-				{
-					orderSqlTransaction.UpdateMedicineAmount(medicine, (medicine.Amount - quantity));
-					orderSqlTransaction.InsertOrderWithoutPrescription(new Order(null, null, medicine.ID, DateTime.Now, quantity));
-
-					Console.WriteLine($"\nSuma zamówienia: {medicine.Price * quantity}zł. Czy klient zapłacił? (Y/N): ");
-					if (Console.ReadLine() != "Y")
-					{
-						ConsoleEx.WriteLineInRed("Anulowano akcję!");
-						orderSqlTransaction.TransactionRollback();
-						return;
-					}
-
-					orderSqlTransaction.TransactionCommit();
-					ConsoleEx.WriteLineInGreen("Sukces!");
-				}
-				catch (Exception e)
-				{
-					ConsoleEx.WriteLineInRed($"Wyjątek przy finalizacji: {e.GetType()}: {e.Message}");
-					orderSqlTransaction.TransactionRollback();
-				}
+				// Finalizacja zamówienia z receptą
+				OrderFinalization_(orderSqlTransaction, null, medicine, quantity);
 			}
 		}
 	}
