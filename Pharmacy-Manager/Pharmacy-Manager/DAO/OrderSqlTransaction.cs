@@ -9,7 +9,7 @@ namespace Pharmacy_Manager
 
 	public class OrderSqlTransaction
 	{
-		SqlConnection sqlConnection_ = new SqlConnection(ConnectionString.connectionString);
+		SqlConnection sqlConnection = new SqlConnection(ConnectionString.connectionString);
 		SqlTransaction transaction;
 		SqlCommand sqlCommand = new SqlCommand();
 
@@ -19,9 +19,9 @@ namespace Pharmacy_Manager
 
 		public OrderSqlTransaction()
 		{
-			sqlConnection_.Open();
-			this.transaction = sqlConnection_.BeginTransaction();
-			sqlCommand.Connection = sqlConnection_;
+			sqlConnection.Open();
+			this.transaction = sqlConnection.BeginTransaction();
+			sqlCommand.Connection = sqlConnection;
 			sqlCommand.Transaction = transaction;
 		}
 
@@ -32,7 +32,7 @@ namespace Pharmacy_Manager
 		public void TransactionCommit()
 		{
 			transaction.Commit();
-			sqlConnection_.Close();
+			sqlConnection.Close();
 		}
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace Pharmacy_Manager
 		public void TransactionRollback()
 		{
 			transaction.Rollback();
-			sqlConnection_.Close();
+			sqlConnection.Close();
 		}
 
 		/// <summary>

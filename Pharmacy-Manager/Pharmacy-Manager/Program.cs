@@ -16,33 +16,41 @@ namespace Pharmacy_Manager
 				command = Console.ReadLine().Trim().ToLower();
 				Console.Clear();
 
-				if (command == "exit")
+				if (command == "exit" || command == "e")
 					break;
 
 				switch (command)
 				{
 					case "help":
+					case "h":
 						HelpCommand();
 						break;
 					case "madd":
+					case "ma":
 						AddMedicineCommand();
 						break;
 					case "mshowall":
+					case "ms":
 						ShowAllMedicinesCommand();
 						break;
 					case "mshowselected":
+					case "me":
 						ShowChosenMedicinesCommand();
 						break;
 					case "mupdate":
+					case "mu":
 						UpdateMedicineCommand();
 						break;
 					case "mupdateamount":
+					case "mm":
 						UpdateMedicineAmountCommand();
 						break;
 					case "mdelete":
+					case "md":
 						DeleteMedicineCommand();
 						break;
 					case "order":
+					case "o":
 						AddToOrder();
 						break;
 					default:
@@ -66,7 +74,7 @@ namespace Pharmacy_Manager
 		/// 	Medicine / null
 		/// </returns>
 
-		private static Medicine GetMedicineFromUser_()
+		private static Medicine GetMedicineFromUser()
 		{
 			try
 			{
@@ -84,7 +92,7 @@ namespace Pharmacy_Manager
 
 				bool withPrescription;
 				Console.Write("Czy to lek na receptę (Y/N): ");
-				if (Console.ReadLine().Trim() == "Y")
+				if (Console.ReadLine().Trim().ToUpper() == "Y")
 					withPrescription = true;
 				else
 					withPrescription = false;
@@ -109,7 +117,7 @@ namespace Pharmacy_Manager
 		/// </summary>
 		/// <param name="byNamePart"></param>
 
-		private static void ShowMedicines_(string byNamePart = "")
+		private static void ShowMedicines(string byNamePart = "")
 		{
 			List<Medicine> medicines = MedicineDAO.SelectMedicines(byNamePart);
 
@@ -126,11 +134,11 @@ namespace Pharmacy_Manager
 
 		/// <summary>
 		/// 	Zwraca listę leków z indeksami
-		/// 	Wykorzystuje: GetMedicineByIndex_()
+		/// 	Wykorzystuje: GetMedicineByIndex()
 		/// </summary>
 		/// <param name="byNamePart"></param>
 
-		private static List<Medicine> GetMedicinesForIndex_(string byNamePart = "")
+		private static List<Medicine> GetMedicinesForIndex(string byNamePart = "")
 		{
 			// Pobranie listy 
 			List<Medicine> medicines = MedicineDAO.SelectMedicines(byNamePart);
@@ -143,19 +151,19 @@ namespace Pharmacy_Manager
 
 		/// <summary>
 		/// 	Zwraca wybrany lek po indeksie bez upewniania się, czy rekord modyfikować 
-		/// 	Wykorzystuje: GetMedicineForEditWithConfirmation_() / AddToOrder()
+		/// 	Wykorzystuje: GetMedicineForEditWithConfirmation() / AddToOrder()
 		/// </summary>
 		/// <returns>
 		/// 	Medicine / null
 		/// </returns>
 
-		private static Medicine GetMedicineByIndex_()
+		private static Medicine GetMedicineByIndex()
 		{
 			// Dodatkowa przeszukiwarka
 			Console.Write("Jakiego leku szukasz (możesz zawęzić poszukiwania / wciśnij enter, aby pokazać wszystko): ");
 			string text = Console.ReadLine().Trim();
 			Console.WriteLine();
-			List<Medicine> medList = GetMedicinesForIndex_(text);
+			List<Medicine> medList = GetMedicinesForIndex(text);
 
 			if (medList == null)
 				return null;
@@ -204,17 +212,17 @@ namespace Pharmacy_Manager
 		/// 	Medicine / null
 		/// </returns>
 
-		private static Medicine GetMedicineForEditWithConfirmation_()
+		private static Medicine GetMedicineForEditWithConfirmation()
 		{
 			// Pobranie leku po indeksie
-			Medicine medicine = GetMedicineByIndex_();
+			Medicine medicine = GetMedicineByIndex();
 
 			if (medicine == null)
 				return null;
 
 			// Upewnienie się 
 			ConsoleEx.ImportantQuestion("Na pewno? (Y/N): ");
-			if (Console.ReadLine().Trim() != "Y")
+			if (Console.ReadLine().Trim().ToUpper() != "Y")
 			{
 				ConsoleEx.WriteLineInGreen("\nAkcji nie wykonano!");
 				return null;
@@ -231,7 +239,7 @@ namespace Pharmacy_Manager
 		/// 	Prescription / null
 		/// </returns>
 
-		private static Prescription GetPrescriptionFromUser_()
+		private static Prescription GetPrescriptionFromUser()
 		{
 			try
 			{
@@ -270,7 +278,7 @@ namespace Pharmacy_Manager
 		/// 	Prescription / null
 		/// </returns>
 
-		private static Prescription GetPrescriptionWithConfirmation_()
+		private static Prescription GetPrescriptionWithConfirmation()
 		{
 			// Dodatkowa przeszukiwarka
 			Console.Write("Wpisz fragment numeru recepty (możesz zawęzić poszukiwania / wciśnij enter, aby pokazać wszystko): ");
@@ -318,7 +326,7 @@ namespace Pharmacy_Manager
 
 			// Upewnienie się 
 			ConsoleEx.ImportantQuestion("Na pewno? (Y/N): ");
-			if (Console.ReadLine().Trim() != "Y")
+			if (Console.ReadLine().Trim().ToUpper() != "Y")
 			{
 				ConsoleEx.WriteLineInGreen("\nAkcji nie wykonano!");
 				return null;
@@ -333,7 +341,7 @@ namespace Pharmacy_Manager
 		/// 	Wykorzystuje: AddToOrder()
 		/// </summary>
 
-		public static void OrderFinalization_(OrderSqlTransaction orderSqlTransaction, Prescription prescription, Medicine medicine, int quantity)
+		public static void OrderFinalization(OrderSqlTransaction orderSqlTransaction, Prescription prescription, Medicine medicine, int quantity)
 		{
 			try
 			{
@@ -357,7 +365,7 @@ namespace Pharmacy_Manager
 
 				// Upewnienie się
 				Console.WriteLine($"\nSuma zamówienia: {medicine.Price * quantity}zł. Czy klient zapłacił? (Y/N): ");
-				if (Console.ReadLine() != "Y")
+				if (Console.ReadLine().Trim().ToUpper() != "Y")
 				{
 					ConsoleEx.WriteLineInRed("Anulowano akcję!");
 					orderSqlTransaction.TransactionRollback();
@@ -387,17 +395,17 @@ namespace Pharmacy_Manager
 			ConsoleEx.WriteLineInCyan(" Help ".PadLeft(18, '-').PadRight(30, '-'));
 
 			Console.WriteLine("Oto Lista komend:");
-			Console.WriteLine("Komenda: help          -> Wyświetla spis komend wraz z wyjaśnieniami.");
-			Console.WriteLine("Komenda: exit          -> Wychodzi z programu.\n");
+			Console.WriteLine("Komenda: help          -> skrót: h  -> Wyświetla spis komend wraz z wyjaśnieniami.");
+			Console.WriteLine("Komenda: exit          -> skrót: e  -> Wychodzi z programu.\n");
 
-			Console.WriteLine("Komenda: mshowall      -> Pokazuje listę wszystkich dostępnych leków.");
-			Console.WriteLine("Komenda: mshowselected -> Pokazuje listę leków, które można przeszukać po nazwie.");
-			Console.WriteLine("Komenda: madd          -> Dodaje lek.");
-			Console.WriteLine("Komenda: mupdate       -> Pokazuje listę leków i pozwala jeden z nich zmienić.");
-			Console.WriteLine("Komenda: mupdateamount -> Pokazuje listę leków i pozwala w jednym z nich zmienić ilość.");
-			Console.WriteLine("Komenda: mdelete       -> Pokazuje listę leków i pozwala jeden z nich usunąć.\n");
+			Console.WriteLine("Komenda: mshowall      -> skrót: ms  -> Pokazuje listę wszystkich dostępnych leków.");
+			Console.WriteLine("Komenda: mshowselected -> skrót: me  -> Pokazuje listę leków, które można przeszukać po nazwie.");
+			Console.WriteLine("Komenda: madd          -> skrót: ma  -> Dodaje lek.");
+			Console.WriteLine("Komenda: mupdate       -> skrót: mu  -> Pokazuje listę leków i pozwala jeden z nich zmienić.");
+			Console.WriteLine("Komenda: mupdateamount -> skrót: mr  -> Pokazuje listę leków i pozwala w jednym z nich zmienić ilość.");
+			Console.WriteLine("Komenda: mdelete       -> skrót: md  -> Pokazuje listę leków i pozwala jeden z nich usunąć.\n");
 
-			Console.WriteLine("Komenda: order         -> Przygotowuje zamówienie.\n");
+			Console.WriteLine("Komenda: order         -> skrót: o   -> Przygotowuje zamówienie.\n");
 
 			ConsoleEx.WriteLineInGreen("Sukces!");
 		}
@@ -410,7 +418,7 @@ namespace Pharmacy_Manager
 		{
 			ConsoleEx.WriteLineInCyan(" Dodawanie Leku ".PadLeft(23, '-').PadRight(30, '-'));
 
-			Medicine medicine = GetMedicineFromUser_();
+			Medicine medicine = GetMedicineFromUser();
 
 			if (medicine == null)
 				return;
@@ -433,7 +441,7 @@ namespace Pharmacy_Manager
 			Console.WriteLine();
 
 			// Odpala metodę szukającą z podanym parametrem
-			ShowMedicines_(text);
+			ShowMedicines(text);
 		}
 
 		/// <summary>
@@ -445,7 +453,7 @@ namespace Pharmacy_Manager
 			ConsoleEx.WriteLineInCyan(" Lista Lekarstw ".PadLeft(23, '-').PadRight(30, '-'));
 
 			// Odpala metodę szukającą bez parametru
-			ShowMedicines_();
+			ShowMedicines();
 		}
 
 		/// <summary>
@@ -457,7 +465,7 @@ namespace Pharmacy_Manager
 			ConsoleEx.WriteLineInCyan(" Zmiana Lekarstwa ".PadLeft(24, '-').PadRight(30, '-'));
 
 			// Pobranie leku do zmiany
-			Medicine oldMedicine = GetMedicineForEditWithConfirmation_();
+			Medicine oldMedicine = GetMedicineForEditWithConfirmation();
 			// Format wyświetlania
 			Console.WriteLine();
 
@@ -468,7 +476,7 @@ namespace Pharmacy_Manager
 			}
 
 			// Pobranie nowego leku
-			Medicine newMedicine = GetMedicineFromUser_();
+			Medicine newMedicine = GetMedicineFromUser();
 
 			if (newMedicine == null)
 				return;
@@ -486,7 +494,7 @@ namespace Pharmacy_Manager
 			ConsoleEx.WriteLineInCyan(" Zmiana Ilości Leku ".PadLeft(25, '-').PadRight(30, '-'));
 
 			// Pobranie leku
-			Medicine oldMedicine = GetMedicineForEditWithConfirmation_();
+			Medicine oldMedicine = GetMedicineForEditWithConfirmation();
 			Console.WriteLine();
 
 			if (oldMedicine == null)
@@ -521,7 +529,7 @@ namespace Pharmacy_Manager
 			ConsoleEx.WriteLineInCyan(" Usuwanie Lekarstwa ".PadLeft(25, '-').PadRight(30, '-'));
 
 			// Pobranie leku
-			Medicine medicine = GetMedicineForEditWithConfirmation_();
+			Medicine medicine = GetMedicineForEditWithConfirmation();
 
 			if (medicine == null)
 			{
@@ -548,7 +556,7 @@ namespace Pharmacy_Manager
 			ConsoleEx.WriteLineInCyan(" Zamówienie ".PadLeft(21, '-').PadRight(30, '-'));
 
 			// Pobranie leku
-			Medicine medicine = GetMedicineByIndex_();
+			Medicine medicine = GetMedicineByIndex();
 
 			if (medicine == null)
 			{
@@ -584,44 +592,44 @@ namespace Pharmacy_Manager
 
 				Console.Write("Czy recepta jest już w systemie? (Y/N): ");
 				// Scieżka dla recepty w systemie
-				if (Console.ReadLine() == "Y")
+				if (Console.ReadLine().Trim().ToUpper() == "Y")
 				{
 					// Pod wyświetlanie 
 					Console.WriteLine();
 
 					// Pobranie recepty
-					Prescription prescription = GetPrescriptionWithConfirmation_();
+					Prescription prescription = GetPrescriptionWithConfirmation();
 
 					if (prescription == null)
 						return;
 
 					// Finalizacja zamówienia z receptą
-					OrderFinalization_(orderSqlTransaction, prescription, medicine, quantity);
+					OrderFinalization(orderSqlTransaction, prescription, medicine, quantity);
 				}
 				// Scieżka dla nowej recepty
 				else
 				{
 					// musimy takową pobrać
 					Console.Write("\nCzy klient posiada receptę? (Y/N): ");
-					if (Console.ReadLine() != "Y")
+					if (Console.ReadLine().Trim().ToUpper() != "Y")
 					{
 						ConsoleEx.WriteLineInRed("Anulowano akcję!");
 						return;
 					}
 
-					Prescription prescription = GetPrescriptionFromUser_();
+					Prescription prescription = GetPrescriptionFromUser();
 					if (prescription == null)
 						return;
 
 					// Finalizacja zamówienia z receptą
-					OrderFinalization_(orderSqlTransaction, prescription, medicine, quantity);
+					OrderFinalization(orderSqlTransaction, prescription, medicine, quantity);
 				}
 			}
 			// Bez recepty
 			else
 			{
 				// Finalizacja zamówienia z receptą
-				OrderFinalization_(orderSqlTransaction, null, medicine, quantity);
+				OrderFinalization(orderSqlTransaction, null, medicine, quantity);
 			}
 		}
 	}
