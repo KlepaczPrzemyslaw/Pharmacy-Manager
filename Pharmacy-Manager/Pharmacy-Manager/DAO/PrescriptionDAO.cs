@@ -20,14 +20,7 @@ namespace Pharmacy_Manager
 			List<Prescription> list = new List<Prescription>();
 
 			// Parsowanie
-			if (string.IsNullOrWhiteSpace(byNumberPart))
-			{
-				NumberPart = null;
-			}
-			else
-			{
-				NumberPart = long.Parse(byNumberPart);
-			}
+			NumberPart = string.IsNullOrWhiteSpace(byNumberPart) ? NumberPart = null : NumberPart = long.Parse(byNumberPart);
 				
 			try
 			{

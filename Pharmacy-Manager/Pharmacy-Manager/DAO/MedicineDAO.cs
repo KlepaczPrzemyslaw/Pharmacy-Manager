@@ -128,6 +128,11 @@ namespace Pharmacy_Manager
 			SqlTransactionTool.Transaction(sqlCommand);
 		}
 
+		/// <summary>
+		/// 	DELETE na lekarstwie
+		/// </summary>
+		/// <param name="medicineToDelete"></param>
+
 		public static void DeleteMedicineByTransaction(Medicine medicineToDelete)
 		{
 			SqlCommand sqlCommand = new SqlCommand();

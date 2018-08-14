@@ -8,7 +8,7 @@ namespace Pharmacy_Manager
 		static void Main(string[] args)
 		{
 			string command = "";
-			ConsoleEx.WriteLineInYellow("------ Pharmacy Manager ------");
+			ConsoleEx.WriteLineWithColor("------ Pharmacy Manager ------", ConsoleColor.Yellow);
 
 			while (true)
 			{
@@ -54,11 +54,11 @@ namespace Pharmacy_Manager
 						AddToOrder();
 						break;
 					default:
-						ConsoleEx.WriteLineInRed("Niepoprawna komenda !!");
+						ConsoleEx.WriteLineWithColor("Niepoprawna komenda !!", ConsoleColor.Red);
 						break;
 				}
 
-				ConsoleEx.WriteLineInYellow(" Nowa Komenda ".PadLeft(22, '-').PadRight(30, '-'));
+				ConsoleEx.WriteLineWithColor(" Nowa Komenda ".PadLeft(22, '-').PadRight(30, '-'), ConsoleColor.Yellow);
 			}
 		}
 
@@ -101,12 +101,12 @@ namespace Pharmacy_Manager
 			}
 			catch (FormatException)
 			{
-				ConsoleEx.WriteLineInRed($"Nastąpił błąd: Podałeś daną o nieprawidłowym formacie!!");
+				ConsoleEx.WriteLineWithColor($"Nastąpił błąd: Podałeś daną o nieprawidłowym formacie!!", ConsoleColor.Red);
 				return null;
 			}
 			catch (Exception e)
 			{
-				ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w pobieraniu leku od użytkownika: {e.GetType().ToString()}: {e.Message}!!");
+				ConsoleEx.WriteLineWithColor($"Nastąpił wyjątek w pobieraniu leku od użytkownika: {e.GetType().ToString()}: {e.Message}!!", ConsoleColor.Red);
 				return null;
 			}
 		}
@@ -129,7 +129,7 @@ namespace Pharmacy_Manager
 				medicine.ShowMedicine();
 			}
 
-			ConsoleEx.WriteLineInGreen("Sukces!");
+			ConsoleEx.WriteLineWithColor("Sukces!", ConsoleColor.Green);
 		}
 
 		/// <summary>
@@ -171,7 +171,7 @@ namespace Pharmacy_Manager
 			// Wypisanie lekarstw z indeksami
 			for (int i = 0; i < medList.Count; i++)
 			{
-				ConsoleEx.WriteInGreen($"Index [{i}]:");
+				ConsoleEx.WriteWithColor($"Index [{i}]:", ConsoleColor.Green);
 				medList[i].ShowMedicine();
 			}
 
@@ -184,12 +184,12 @@ namespace Pharmacy_Manager
 			}
 			catch
 			{
-				ConsoleEx.WriteLineInRed("Niepoprawny index!");
+				ConsoleEx.WriteLineWithColor("Niepoprawny index!", ConsoleColor.Red);
 				return null;
 			}
 
 			// Pokazanie leku
-			ConsoleEx.WriteLineInRed("\nWybrany lek: ");
+			ConsoleEx.WriteLineWithColor("\nWybrany lek: ", ConsoleColor.Red);
 
 			try
 			{
@@ -197,7 +197,7 @@ namespace Pharmacy_Manager
 			}
 			catch(Exception e)
 			{
-				ConsoleEx.WriteLineInRed($"Niepoprawny index! Treść wyjątku: {e.GetType()}: {e.Message}");
+				ConsoleEx.WriteLineWithColor($"Niepoprawny index! Treść wyjątku: {e.GetType()}: {e.Message}", ConsoleColor.Red);
 				return null;
 			}
 
@@ -224,7 +224,7 @@ namespace Pharmacy_Manager
 			ConsoleEx.ImportantQuestion("Na pewno? (Y/N): ");
 			if (Console.ReadLine().Trim().ToUpper() != "Y")
 			{
-				ConsoleEx.WriteLineInGreen("\nAkcji nie wykonano!");
+				ConsoleEx.WriteLineWithColor("\nAkcji nie wykonano!", ConsoleColor.Green);
 				return null;
 			}
 
@@ -260,12 +260,12 @@ namespace Pharmacy_Manager
 			}
 			catch (FormatException)
 			{
-				ConsoleEx.WriteLineInRed($"Nastąpił błąd: Podałeś daną o nieprawidłowym formacie!!");
+				ConsoleEx.WriteLineWithColor($"Nastąpił błąd: Podałeś daną o nieprawidłowym formacie!!", ConsoleColor.Red);
 				return null;
 			}
 			catch (Exception e)
 			{
-				ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w pobieraniu leku od użytkownika: {e.GetType().ToString()}: {e.Message}!!");
+				ConsoleEx.WriteLineWithColor($"Nastąpił wyjątek w pobieraniu leku od użytkownika: {e.GetType().ToString()}: {e.Message}!!", ConsoleColor.Red);
 				return null;
 			}
 		}
@@ -294,7 +294,7 @@ namespace Pharmacy_Manager
 			// Wypisanie recept z indeksami
 			for (int i = 0; i < prescriptions.Count; i++)
 			{
-				ConsoleEx.WriteInGreen($"Index [{i}]:");
+				ConsoleEx.WriteWithColor($"Index [{i}]:", ConsoleColor.Green);
 				prescriptions[i].ShowPrescription();
 			}
 
@@ -307,12 +307,12 @@ namespace Pharmacy_Manager
 			}
 			catch
 			{
-				ConsoleEx.WriteLineInRed("Niepoprawny index!");
+				ConsoleEx.WriteLineWithColor("Niepoprawny index!", ConsoleColor.Red);
 				return null;
 			}
 
 			// Pokazanie leku
-			ConsoleEx.WriteLineInRed("\nWybrana recepta: ");
+			ConsoleEx.WriteLineWithColor("\nWybrana recepta: ", ConsoleColor.Red);
 
 			try
 			{
@@ -320,7 +320,7 @@ namespace Pharmacy_Manager
 			}
 			catch (Exception e)
 			{
-				ConsoleEx.WriteLineInRed($"Niepoprawny index! Treść wyjątku: {e.GetType()}: {e.Message}");
+				ConsoleEx.WriteLineWithColor($"Niepoprawny index! Treść wyjątku: {e.GetType()}: {e.Message}", ConsoleColor.Red);
 				return null;
 			}
 
@@ -328,7 +328,7 @@ namespace Pharmacy_Manager
 			ConsoleEx.ImportantQuestion("Na pewno? (Y/N): ");
 			if (Console.ReadLine().Trim().ToUpper() != "Y")
 			{
-				ConsoleEx.WriteLineInGreen("\nAkcji nie wykonano!");
+				ConsoleEx.WriteLineWithColor("\nAkcji nie wykonano!", ConsoleColor.Green);
 				return null;
 			}
 
@@ -367,17 +367,17 @@ namespace Pharmacy_Manager
 				Console.WriteLine($"\nSuma zamówienia: {medicine.Price * quantity}zł. Czy klient zapłacił? (Y/N): ");
 				if (Console.ReadLine().Trim().ToUpper() != "Y")
 				{
-					ConsoleEx.WriteLineInRed("Anulowano akcję!");
+					ConsoleEx.WriteLineWithColor("Anulowano akcję!", ConsoleColor.Red);
 					orderSqlTransaction.TransactionRollback();
 					return;
 				}
 
 				orderSqlTransaction.TransactionCommit();
-				ConsoleEx.WriteLineInGreen("Sukces!");
+				ConsoleEx.WriteLineWithColor("Sukces!", ConsoleColor.Green);
 			}
 			catch (Exception e)
 			{
-				ConsoleEx.WriteLineInRed($"Wyjątek przy finalizacji: {e.GetType()}: {e.Message}");
+				ConsoleEx.WriteLineWithColor($"Wyjątek przy finalizacji: {e.GetType()}: {e.Message}", ConsoleColor.Red);
 				orderSqlTransaction.TransactionRollback();
 			}
 		}
@@ -392,7 +392,7 @@ namespace Pharmacy_Manager
 
 		private static void HelpCommand()
 		{
-			ConsoleEx.WriteLineInCyan(" Help ".PadLeft(18, '-').PadRight(30, '-'));
+			ConsoleEx.WriteLineWithColor(" Help ".PadLeft(18, '-').PadRight(30, '-'), ConsoleColor.Cyan);
 
 			Console.WriteLine("Oto Lista komend:");
 			Console.WriteLine("Komenda: help          -> skrót: h  -> Wyświetla spis komend wraz z wyjaśnieniami.");
@@ -407,7 +407,7 @@ namespace Pharmacy_Manager
 
 			Console.WriteLine("Komenda: order         -> skrót: o   -> Przygotowuje zamówienie.\n");
 
-			ConsoleEx.WriteLineInGreen("Sukces!");
+			ConsoleEx.WriteLineWithColor("Sukces!", ConsoleColor.Green);
 		}
 
 		/// <summary>
@@ -416,7 +416,7 @@ namespace Pharmacy_Manager
 
 		private static void AddMedicineCommand()
 		{
-			ConsoleEx.WriteLineInCyan(" Dodawanie Leku ".PadLeft(23, '-').PadRight(30, '-'));
+			ConsoleEx.WriteLineWithColor(" Dodawanie Leku ".PadLeft(23, '-').PadRight(30, '-'), ConsoleColor.Cyan);
 
 			Medicine medicine = GetMedicineFromUser();
 
@@ -433,7 +433,7 @@ namespace Pharmacy_Manager
 
 		private static void ShowChosenMedicinesCommand()
 		{
-			ConsoleEx.WriteLineInCyan(" Lista Lekarstw ".PadLeft(23, '-').PadRight(30, '-'));
+			ConsoleEx.WriteLineWithColor(" Lista Lekarstw ".PadLeft(23, '-').PadRight(30, '-'), ConsoleColor.Cyan);
 
 			Console.Write("Jakiego leku szukasz: ");
 			string text = Console.ReadLine().Trim();
@@ -450,7 +450,7 @@ namespace Pharmacy_Manager
 
 		public static void ShowAllMedicinesCommand()
 		{
-			ConsoleEx.WriteLineInCyan(" Lista Lekarstw ".PadLeft(23, '-').PadRight(30, '-'));
+			ConsoleEx.WriteLineWithColor(" Lista Lekarstw ".PadLeft(23, '-').PadRight(30, '-'), ConsoleColor.Cyan);
 
 			// Odpala metodę szukającą bez parametru
 			ShowMedicines();
@@ -462,7 +462,7 @@ namespace Pharmacy_Manager
 
 		private static void UpdateMedicineCommand()
 		{
-			ConsoleEx.WriteLineInCyan(" Zmiana Lekarstwa ".PadLeft(24, '-').PadRight(30, '-'));
+			ConsoleEx.WriteLineWithColor(" Zmiana Lekarstwa ".PadLeft(24, '-').PadRight(30, '-'), ConsoleColor.Cyan);
 
 			// Pobranie leku do zmiany
 			Medicine oldMedicine = GetMedicineForEditWithConfirmation();
@@ -471,7 +471,7 @@ namespace Pharmacy_Manager
 
 			if (oldMedicine == null)
 			{
-				ConsoleEx.WriteLineInRed("Anulowano akcję!");
+				ConsoleEx.WriteLineWithColor("Anulowano akcję!", ConsoleColor.Red);
 				return;
 			}
 
@@ -491,7 +491,7 @@ namespace Pharmacy_Manager
 
 		private static void UpdateMedicineAmountCommand()
 		{
-			ConsoleEx.WriteLineInCyan(" Zmiana Ilości Leku ".PadLeft(25, '-').PadRight(30, '-'));
+			ConsoleEx.WriteLineWithColor(" Zmiana Ilości Leku ".PadLeft(25, '-').PadRight(30, '-'), ConsoleColor.Cyan);
 
 			// Pobranie leku
 			Medicine oldMedicine = GetMedicineForEditWithConfirmation();
@@ -499,7 +499,7 @@ namespace Pharmacy_Manager
 
 			if (oldMedicine == null)
 			{
-				ConsoleEx.WriteLineInRed("Anulowano akcję!");
+				ConsoleEx.WriteLineWithColor("Anulowano akcję!", ConsoleColor.Red);
 				return;
 			}
 
@@ -512,7 +512,7 @@ namespace Pharmacy_Manager
 			}
 			catch
 			{
-				ConsoleEx.WriteLineInRed("Niepoprawny index!");
+				ConsoleEx.WriteLineWithColor("Niepoprawny index!", ConsoleColor.Red);
 				return;
 			}
 
@@ -526,14 +526,14 @@ namespace Pharmacy_Manager
 
 		private static void DeleteMedicineCommand()
 		{
-			ConsoleEx.WriteLineInCyan(" Usuwanie Lekarstwa ".PadLeft(25, '-').PadRight(30, '-'));
+			ConsoleEx.WriteLineWithColor(" Usuwanie Lekarstwa ".PadLeft(25, '-').PadRight(30, '-'), ConsoleColor.Cyan);
 
 			// Pobranie leku
 			Medicine medicine = GetMedicineForEditWithConfirmation();
 
 			if (medicine == null)
 			{
-				ConsoleEx.WriteLineInRed("Anulowano akcję!");
+				ConsoleEx.WriteLineWithColor("Anulowano akcję!", ConsoleColor.Red);
 				return;
 			}
 
@@ -553,14 +553,14 @@ namespace Pharmacy_Manager
 		{
 			OrderSqlTransaction orderSqlTransaction = new OrderSqlTransaction();
 
-			ConsoleEx.WriteLineInCyan(" Zamówienie ".PadLeft(21, '-').PadRight(30, '-'));
+			ConsoleEx.WriteLineWithColor(" Zamówienie ".PadLeft(21, '-').PadRight(30, '-'), ConsoleColor.Cyan);
 
 			// Pobranie leku
 			Medicine medicine = GetMedicineByIndex();
 
 			if (medicine == null)
 			{
-				ConsoleEx.WriteLineInRed("Anulowano akcję!");
+				ConsoleEx.WriteLineWithColor("Anulowano akcję!", ConsoleColor.Red);
 				return;
 			}
 
@@ -576,19 +576,19 @@ namespace Pharmacy_Manager
 			}
 			catch (QuantityException)
 			{
-				ConsoleEx.WriteLineInRed($"Brak wystarczającej ilości leku w bazie!!");
+				ConsoleEx.WriteLineWithColor($"Brak wystarczającej ilości leku w bazie!!", ConsoleColor.Red);
 				return;
 			}
 			catch (Exception e)
 			{
-				ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w pobieraniu ilości: {e.GetType().ToString()}: {e.Message}!!");
+				ConsoleEx.WriteLineWithColor($"Nastąpił wyjątek w pobieraniu ilości: {e.GetType().ToString()}: {e.Message}!!", ConsoleColor.Red);
 				return;
 			}
 
 			// Scieżka recepty
 			if (medicine.WithPrescription == true)
 			{
-				ConsoleEx.WriteLineInRed($"\nTen lek jest na receptę!");
+				ConsoleEx.WriteLineWithColor($"\nTen lek jest na receptę!", ConsoleColor.Red);
 
 				Console.Write("Czy recepta jest już w systemie? (Y/N): ");
 				// Scieżka dla recepty w systemie
@@ -613,7 +613,7 @@ namespace Pharmacy_Manager
 					Console.Write("\nCzy klient posiada receptę? (Y/N): ");
 					if (Console.ReadLine().Trim().ToUpper() != "Y")
 					{
-						ConsoleEx.WriteLineInRed("Anulowano akcję!");
+						ConsoleEx.WriteLineWithColor("Anulowano akcję!", ConsoleColor.Red);
 						return;
 					}
 

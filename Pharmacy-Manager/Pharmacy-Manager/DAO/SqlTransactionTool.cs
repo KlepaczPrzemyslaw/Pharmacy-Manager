@@ -15,9 +15,9 @@ namespace Pharmacy_Manager
 			int queryValue;
 			SqlTransaction transaction = null;
 
-			try
+			using (SqlConnection sqlConnection = new SqlConnection(ConnectionString.connectionString))
 			{
-				using (SqlConnection sqlConnection = new SqlConnection(ConnectionString.connectionString))
+				try
 				{
 					// Dodanie komendy do połączenia
 					sqlCommand.Connection = sqlConnection;
@@ -38,33 +38,34 @@ namespace Pharmacy_Manager
 					transaction.Commit();
 					ConsoleEx.WriteLineInGreen("\nSukces!");
 				}
-			}
-			catch (ZeroException)
-			{
-				ConsoleEx.WriteLineInRed("Nastąpił wyjątek w transakcji: Transakcja została wykonana, ale nie zmieniono żadnego wiersza!!");
+				catch (ZeroException)
+				{
+					ConsoleEx.WriteLineInRed("Nastąpił wyjątek w transakcji: Transakcja została wykonana, ale nie zmieniono żadnego wiersza!!");
 
-				try
-				{
-					transaction.Rollback();
+					try
+					{
+						transaction.Rollback();
+					}
+					catch (Exception e2)
+					{
+						ConsoleEx.WriteLineInRed($"Nastąpił wyjątek przy anulowaniu transakcji: {e2.GetType().ToString()}: {e2.Message}!!");
+					}
 				}
-				catch (Exception e2)
+				catch (Exception e)
 				{
-					ConsoleEx.WriteLineInRed($"Nastąpił wyjątek przy anulowaniu transakcji: {e2.GetType().ToString()}: {e2.Message}!!");
-				}
-			}
-			catch (Exception e)
-			{
-				ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w transakcji: {e.GetType().ToString()}: {e.Message}!!");
+					ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w transakcji: {e.GetType().ToString()}: {e.Message}!!");
 
-				try
-				{
-					transaction.Rollback();
+					try
+					{
+						transaction.Rollback();
+					}
+					catch (Exception e2)
+					{
+						ConsoleEx.WriteLineInRed($"Nastąpił wyjątek przy anulowaniu transakcji: {e2.GetType().ToString()}: {e2.Message}!!");
+					}
 				}
-				catch (Exception e2)
-				{
-					ConsoleEx.WriteLineInRed($"Nastąpił wyjątek przy anulowaniu transakcji: {e2.GetType().ToString()}: {e2.Message}!!");
-				}
-			}
+			} // Zamknięcie połączenia
 		}
+
 	}
 }
