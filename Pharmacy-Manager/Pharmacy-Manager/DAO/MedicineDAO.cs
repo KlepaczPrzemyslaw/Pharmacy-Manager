@@ -56,7 +56,7 @@ namespace Pharmacy_Manager
 			}
 			catch (Exception e)
 			{
-				ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w pobieraniu leku: {e.GetType().ToString()}: {e.Message}!!");
+				ConsoleEx.WriteLineWithColor($"Nastąpił wyjątek w pobieraniu leku: {e.GetType().ToString()}: {e.Message}!!", ConsoleColor.Red);
 				return null;
 			}
 

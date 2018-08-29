@@ -36,11 +36,11 @@ namespace Pharmacy_Manager
 						throw new ZeroException();
 					// Commit
 					transaction.Commit();
-					ConsoleEx.WriteLineInGreen("\nSukces!");
+					ConsoleEx.WriteLineWithColor("Sukces!", ConsoleColor.Green);
 				}
 				catch (ZeroException)
 				{
-					ConsoleEx.WriteLineInRed("Nastąpił wyjątek w transakcji: Transakcja została wykonana, ale nie zmieniono żadnego wiersza!!");
+					ConsoleEx.WriteLineWithColor("Nastąpił wyjątek w transakcji: Transakcja została wykonana, ale nie zmieniono żadnego wiersza!!", ConsoleColor.Red);
 
 					try
 					{
@@ -48,12 +48,12 @@ namespace Pharmacy_Manager
 					}
 					catch (Exception e2)
 					{
-						ConsoleEx.WriteLineInRed($"Nastąpił wyjątek przy anulowaniu transakcji: {e2.GetType().ToString()}: {e2.Message}!!");
+						ConsoleEx.WriteLineWithColor($"Nastąpił wyjątek przy anulowaniu transakcji: {e2.GetType().ToString()}: {e2.Message}!!", ConsoleColor.Red);
 					}
 				}
 				catch (Exception e)
 				{
-					ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w transakcji: {e.GetType().ToString()}: {e.Message}!!");
+					ConsoleEx.WriteLineWithColor($"Nastąpił wyjątek w transakcji: {e.GetType().ToString()}: {e.Message}!!", ConsoleColor.Red);
 
 					try
 					{
@@ -61,7 +61,7 @@ namespace Pharmacy_Manager
 					}
 					catch (Exception e2)
 					{
-						ConsoleEx.WriteLineInRed($"Nastąpił wyjątek przy anulowaniu transakcji: {e2.GetType().ToString()}: {e2.Message}!!");
+						ConsoleEx.WriteLineWithColor($"Nastąpił wyjątek przy anulowaniu transakcji: {e2.GetType().ToString()}: {e2.Message}!!", ConsoleColor.Red);
 					}
 				}
 			} // Zamknięcie połączenia

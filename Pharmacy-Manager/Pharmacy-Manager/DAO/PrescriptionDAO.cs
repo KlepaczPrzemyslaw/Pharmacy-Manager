@@ -41,8 +41,8 @@ namespace Pharmacy_Manager
 						SqlParameter sqlNumberParam = new SqlParameter
 						{
 							ParameterName = "@PrescriptionNumber",
-							Value = $"%{NumberPart}%",
-							DbType = System.Data.DbType.Int64
+							DbType = System.Data.DbType.String,
+							Value = $"%{NumberPart}%"
 						};
 						sqlCommand.Parameters.Add(sqlNumberParam);
 					}
@@ -60,7 +60,7 @@ namespace Pharmacy_Manager
 			}
 			catch (Exception e)
 			{
-				ConsoleEx.WriteLineInRed($"Nastąpił wyjątek w pobieraniu recepty: {e.GetType().ToString()}: {e.Message}!!");
+				ConsoleEx.WriteLineWithColor($"Nastąpił wyjątek w pobieraniu recepty: {e.GetType().ToString()}: {e.Message}!!", ConsoleColor.Red);
 				return null;
 			}
 
