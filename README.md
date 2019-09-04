@@ -1,4 +1,4 @@
-# Pharmacy-Manager
+# Pharmacy Manager [C# - Console App]
 - Project Date: 21-07-2018 to 24-07-2018
 - Description: Project after 2 weeks of study C# at CodersLab
 - Project Description: A simple console application for pharmacy, with SQL database.
